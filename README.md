@@ -1,5 +1,5 @@
 [![](https://github.com/qwc-services/qwc-db-auth/workflows/build/badge.svg)](https://github.com/qwc-services/qwc-db-auth/actions)
-[![](https://img.shields.io/docker/pulls/sourcepole/qwc-db-auth)](https://hub.docker.com/r/sourcepole/qwc-db-auth)
+[![docker](https://img.shields.io/docker/v/sourcepole/qwc-db-auth?label=Docker%20image&sort=semver)](https://hub.docker.com/r/sourcepole/qwc-db-auth)
 
 Authentication with User DB
 ===========================
@@ -112,7 +112,7 @@ Install requirements:
 
 Set the `CONFIG_PATH` environment variable to the path containing the service config and permission files when starting this service (default: `config`).
 
-    export CONFIG_PATH=../qwc-docker/demo-config
+    export CONFIG_PATH=../qwc-docker/volumes/config
 
 Configure environment:
 

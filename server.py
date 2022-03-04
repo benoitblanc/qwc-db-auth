@@ -4,11 +4,11 @@ import re
 
 from flask import Flask, request, jsonify
 from flask_login import LoginManager
-from flask_jwt_extended import jwt_required, jwt_optional
+from flask_jwt_extended import jwt_required
 from flask_mail import Mail
 import i18n
 
-from qwc_services_core.jwt import jwt_manager
+from qwc_services_core.auth import auth_manager
 from qwc_services_core.tenant_handler import (
     TenantHandler, TenantPrefixMiddleware, TenantSessionInterface)
 from db_auth import DBAuth
@@ -23,7 +23,7 @@ app.config['JWT_COOKIE_SAMESITE'] = os.environ.get(
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.environ.get(
     'JWT_ACCESS_TOKEN_EXPIRES', 12*3600))
 
-jwt = jwt_manager(app)
+jwt = auth_manager(app)
 app.secret_key = app.config['JWT_SECRET_KEY']
 
 i18n.set('load_path', [os.path.join(os.path.dirname(__file__), 'translations')])
@@ -47,7 +47,8 @@ def mail_config_from_env(app):
         'MAIL_USE_TLS', 'False') == 'True'
     app.config['MAIL_USE_SSL'] = os.environ.get(
         'MAIL_USE_SSL', 'False') == 'True'
-    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')
+    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get(
+        'MAIL_DEFAULT_SENDER', 'root')
     app.config['MAIL_DEBUG'] = int(os.environ.get('MAIL_DEBUG', app.debug))
     app.config['MAIL_MAX_EMAILS'] = os.environ.get('MAIL_MAX_EMAILS')
     app.config['MAIL_SUPPRESS_SEND'] = os.environ.get(
@@ -91,7 +92,7 @@ def verify():
 
 
 @app.route('/logout', methods=['GET', 'POST'])
-@jwt_required
+@jwt_required()
 def logout():
     return db_auth_handler().logout()
 
